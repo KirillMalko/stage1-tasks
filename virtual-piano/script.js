@@ -1,20 +1,28 @@
 const btns = document.querySelectorAll('.btn');
 let keys = document.querySelectorAll('.piano-key');
-let piano = document.querySelectorAll('.piano');
 let isMouseDown;
 window.addEventListener('keydown', playSound);
+window.addEventListener('keyup', onKeyUp);
 document.querySelector('.fullscreen').addEventListener('click', toggleScreen);
 keys.forEach(key => {
     key.addEventListener('mouseover', playNoteForMouseOver);
     key.addEventListener('click', playNote);
     key.addEventListener('mousedown', onMouseDown);
-    // key.addEventListener('mouseup', onMouseUp);
+    key.addEventListener('mouseup', onMouseUp);
     key.addEventListener('transitionend', removeTransition);
 
 });
 
 window.addEventListener('mouseup', onMouseUp);
 
+function onKeyUp(e) {
+    const letter = e.code.replace('Key', '');
+    const key = document.querySelector(`div[data-letter="${letter}"]`);
+    if (key) {
+        key.classList.remove('piano-key-active');
+        key.classList.remove('piano-key-pseudo');
+    }
+}
 
 function playSound(e) {
     const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
@@ -36,11 +44,6 @@ function removeTransition(e) {
     e.target.classList.remove('active');
 }
 
-function keyup(e){
-
-}
-
-
 function toggleScreen() {
     if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen();
@@ -50,7 +53,6 @@ function toggleScreen() {
         }
     }
 }
-
 
 
 function btnSwitch(e) {
@@ -92,14 +94,12 @@ function onMouseDown(e) {
 
 function onMouseUp(e) {
     isMouseDown = false;
-
 }
 
 function playNoteForMouseOver(e) {
-    if (isMouseDown) {// need add event
+    if (isMouseDown) {
         playNote(e);
         e.target.style.transform = 'scale(1)';
-        // add reset event
     }
 }
 
@@ -112,5 +112,4 @@ function playNote(e) {
     note.addEventListener('ended', () => {
         key.classList.remove('active');
     });
-
 }
